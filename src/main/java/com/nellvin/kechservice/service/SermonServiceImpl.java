@@ -5,17 +5,21 @@ import com.nellvin.kechservice.repository.SermonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
-public class SermonServiceImpl implements SermonService{
+public class SermonServiceImpl implements SermonService {
 
     @Autowired
     private SermonRepository sermonRepository;
 
     @Override
     public List<Sermon> retrieveSermons() {
-        return sermonRepository.findAll();
+//        return sermonRepository.findAll();
+        List<Sermon> list = sermonRepository.findAll();
+        Collections.reverse(list);
+        return list;
     }
 
     @Override
