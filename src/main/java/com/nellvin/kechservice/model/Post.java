@@ -14,7 +14,7 @@ public class Post {
     @Column(name = "POST_NAME", length = 64)
     private String title;
 
-    @Column(name = "POST_CONTENT")
+    @Column(name = "POST_CONTENT",columnDefinition="CLOB NOT NULL")
     private String content;
 
     @Column(name = "POST_CREATEDATE")
@@ -22,6 +22,10 @@ public class Post {
 
     @Column(name = "POST_FILE", length = 64)
     private String filePath;
+
+    @Column(name = "POST_AUTHOR", length = 64)
+    private String author;
+
 
     public Long getId() {
         return id;
@@ -61,5 +65,13 @@ public class Post {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 }
