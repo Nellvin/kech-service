@@ -4,7 +4,7 @@ import com.nellvin.kechservice.model.Post;
 import com.nellvin.kechservice.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -15,7 +15,10 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<Post> retrievePosts() {
-        return postRepository.findAll();
+//        return postRepository.findAll().sort((fst, sec) -> sec.getId().compareTo(fst.getId()));
+        List<Post> list = postRepository.findAll();
+        Collections.reverse(list);
+        return list;
     }
 
     @Override
