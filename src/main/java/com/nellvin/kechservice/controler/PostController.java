@@ -1,8 +1,10 @@
 package com.nellvin.kechservice.controler;
 
+import com.nellvin.kechservice.model.FormWrapper;
 import com.nellvin.kechservice.model.Post;
 import com.nellvin.kechservice.service.PostService;
 import com.nellvin.kechservice.utils.FileUploadUtil;
+import org.apache.juli.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -23,7 +25,7 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
-public class PostControler {
+public class PostController {
     private final int POSTS_PER_PAGE = 6;
 
     @Autowired
@@ -41,7 +43,7 @@ public class PostControler {
 
     @GetMapping("/api/posts/pages")
     public int getPostPageCount() {
-        return (postService.retrievePosts().size()-1) / POSTS_PER_PAGE;
+        return (postService.retrievePosts().size() - 1) / POSTS_PER_PAGE;
     }
 
     @GetMapping("/api/posts2")
@@ -76,7 +78,7 @@ public class PostControler {
 
     @GetMapping("/api/posts/{id}/image")
     public ResponseEntity<Resource> getImage(@PathVariable(value = "id") Long sermonId) throws FileNotFoundException {
-        File file = new File(String.valueOf(Paths.get("post-file/" + sermonId +"/"+postService.getPost(sermonId).getFilePath())));
+        File file = new File(String.valueOf(Paths.get("post-file/" + sermonId + "/" + postService.getPost(sermonId).getFilePath())));
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=image.jpg");
 
@@ -95,14 +97,68 @@ public class PostControler {
     }
 
     @PostMapping("/api/posts_file")
-    public void saveSermonAndFile(Post post, @RequestParam("image") MultipartFile multipartFile) throws IOException {
+    public void saveSermonAndFile( Post post, @RequestParam("image") MultipartFile multipartFile) throws IOException {
 
-        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-        post.setFilePath(fileName);
-        Post savedPost = postService.savePost(post);
-        String uploadPhotoDir = "post-file/" + savedPost.getId();
-        FileUploadUtil.saveFile(uploadPhotoDir, fileName, multipartFile);
+        if (!multipartFile.isEmpty()) {
+            System.out.println("REST multipart empty? :"+multipartFile.isEmpty());
+            String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+            post.setFilePath(fileName);
+            Post savedPost = postService.savePost(post);
+            String uploadPhotoDir = "post-file/" + savedPost.getId();
+            FileUploadUtil.saveFile(uploadPhotoDir, fileName, multipartFile);
+        }else {
+//            System.out.println("REST multipart is null");
+            postService.savePost(post);
+        }
 
+    }
+
+
+    @RequestMapping(path = "/api/multi", method = RequestMethod.POST, consumes = {"multipart/form-data"})
+//    @PostMapping(path = "/api/multi")
+    public void multipart(@RequestPart FormWrapper post) throws IOException {
+
+        System.out.println(post.title);
+        System.out.println(post.content);
+            System.out.println("REST multipart empty? :"+post.image.isEmpty());
+            String fileName = StringUtils.cleanPath(post.image.getOriginalFilename());
+//            post.setFilePath(fileName);
+            Post savedPost = postService.savePost(new Post());
+            String uploadPhotoDir = "post-file/" + savedPost.getId();
+            FileUploadUtil.saveFile(uploadPhotoDir, fileName, post.image);
+
+    }
+
+//    @RequestMapping(path = "/api/multi/title", method = RequestMethod.POST, consumes = {"multipart/form-data"})
+    @PostMapping(path = "/api/multi/title")
+    public void multipartTitle(@ModelAttribute FormWrapper post) throws IOException {
+
+        System.out.println(post);
+        System.out.println(post.title);
+//        System.out.println(post.content);
+//        System.out.println("REST multipart empty? :"+post.image.isEmpty());
+//        String fileName = StringUtils.cleanPath(post.image.getOriginalFilename());
+////            post.setFilePath(fileName);
+//        Post savedPost = postService.savePost(new Post());
+//        String uploadPhotoDir = "post-file/" + savedPost.getId();
+//        FileUploadUtil.saveFile(uploadPhotoDir, fileName, post.image);
+
+    }
+    @RequestMapping(value = "/api/G", method = RequestMethod.POST, consumes = { "multipart/form-data" })
+    public Post GSSwain(@RequestPart("post") Post post,
+                        @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
+        if (image!=null) {
+            System.out.println("REST multipart empty? :"+image.isEmpty());
+            String fileName = StringUtils.cleanPath(image.getOriginalFilename());
+            post.setFilePath(fileName);
+            Post savedPost = postService.savePost(post);
+            String uploadPhotoDir = "post-file/" + savedPost.getId();
+            FileUploadUtil.saveFile(uploadPhotoDir, fileName, image);
+        }else {
+            postService.savePost(post);
+        }
+
+        return post;
     }
 
     @DeleteMapping("/api/posts/{id}")
@@ -115,7 +171,7 @@ public class PostControler {
     public void updateSermon(@RequestBody Post post, @PathVariable(name = "id") Long postId) {
         Post pos = postService.getPost(postId);
         if (pos != null)
-            postService.updatePost(pos);
+            postService.updatePost(post);
 
     }
 

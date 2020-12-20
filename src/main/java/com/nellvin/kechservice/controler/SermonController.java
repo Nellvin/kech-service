@@ -1,6 +1,5 @@
 package com.nellvin.kechservice.controler;
 
-import com.nellvin.kechservice.model.Post;
 import com.nellvin.kechservice.model.Sermon;
 import com.nellvin.kechservice.service.SermonService;
 import com.nellvin.kechservice.utils.FileUploadUtil;
@@ -27,7 +26,7 @@ import java.util.List;
 @RestController
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 //@RequestMapping("/api/v1")
-public class SermonControler {
+public class SermonController {
 
     @Autowired
     private SermonService sermonService;
@@ -49,7 +48,7 @@ public class SermonControler {
 
     @GetMapping("/api/sermon/{id}/image")
     public ResponseEntity<Resource> getImage(@PathVariable(value = "id") Long sermonId) throws FileNotFoundException {
-        File file = new File(String.valueOf(Paths.get("sermon-photo/" + sermonId + "/" + sermonService.getSermon(sermonId).getPhoto())));
+        File file = new File(String.valueOf(Paths.get("sermon-photo/" + sermonId + "/" + sermonService.getSermon(sermonId).getPhotoUrl())));
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=image.jpg");
 
@@ -79,7 +78,7 @@ public class SermonControler {
 
     @GetMapping("/api/sermon/{id}/audio")
     public ResponseEntity<Resource> getSermonAudio(@PathVariable(value = "id") Long sermonId) throws FileNotFoundException {
-        File file = new File(String.valueOf(Paths.get("sermon-audio/" + sermonId + "/" + sermonService.getSermon(sermonId).getAudio())));
+        File file = new File(String.valueOf(Paths.get("sermon-audio/" + sermonId + "/" + sermonService.getSermon(sermonId).getAudioUrl())));
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=audio.mp3");
 
@@ -102,10 +101,10 @@ public class SermonControler {
                             @RequestParam("music") MultipartFile multipartFile2) throws IOException {
 
         String photoName = StringUtils.cleanPath(multipartFile1.getOriginalFilename());
-        sermon.setPhoto(photoName);
+        sermon.setPhotoUrl(photoName);
 
         String audioName = StringUtils.cleanPath(multipartFile2.getOriginalFilename());
-        sermon.setAudio(audioName);
+        sermon.setAudioUrl(audioName);
 
         Sermon savedSermon = sermonService.saveSermon(sermon);
         sermon.setUrl("http://localhost:8080/api/sermon/" + savedSermon.getId() + "/audio");
@@ -130,6 +129,53 @@ public class SermonControler {
         FileUploadUtil.saveFile(uploadPhotoDir, photoName.replace(".jpg", "_small.jpg"), resizedImage);
 
 //        return new RedirectView("/users", true);
+    }
+
+    @RequestMapping(value = "/api/sermons/xd", method = RequestMethod.POST, consumes = { "multipart/form-data" })
+    public void saveSermon3(@RequestPart Sermon sermon, @RequestPart(value = "image", required = false) MultipartFile image,
+                            @RequestPart(value = "audio", required = false) MultipartFile audio) throws IOException {
+//        if (image!=null) {
+//            System.out.println("REST multipart empty? :"+image.isEmpty());
+//            String fileName = StringUtils.cleanPath(image.getOriginalFilename());
+//            post.setFilePath(fileName);
+//            Post savedPost = postService.savePost(post);
+//            String uploadPhotoDir = "post-file/" + savedPost.getId();
+//            FileUploadUtil.saveFile(uploadPhotoDir, fileName, image);
+//        }else {
+//            postService.savePost(post);
+//        }
+        Sermon savedSermon = sermonService.saveSermon(sermon);
+        System.out.println("works!");
+        if(image != null) {
+            System.out.println("image found");
+            String photoName = StringUtils.cleanPath(image.getOriginalFilename());
+            sermon.setPhotoUrl(photoName);
+            sermonService.updateSermon(sermon);
+            String uploadPhotoDir = "sermon-photo/" + savedSermon.getId();
+            FileUploadUtil.saveFile(uploadPhotoDir, photoName, image);
+
+            BufferedImage originalImage = ImageIO.read(new File(String.valueOf(Paths.get("sermon-photo/" + savedSermon.getId() + "/" + photoName))));
+            int targetWidth = 50;
+            int targetHeight = originalImage.getHeight() / (originalImage.getWidth() / targetWidth);
+
+            BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
+            Graphics2D graphics2D = resizedImage.createGraphics();
+            graphics2D.drawImage(originalImage, 0, 0, targetWidth, targetHeight, null);
+            graphics2D.dispose();
+
+            FileUploadUtil.saveFile(uploadPhotoDir, photoName.replace(".jpg", "_small.jpg"), resizedImage);
+        }
+
+        if(audio != null) {
+            System.out.println("audio found");
+            String audioName = StringUtils.cleanPath(audio.getOriginalFilename());
+            sermon.setAudioUrl(audioName);
+            sermon.setUrl("http://localhost:8080/api/sermon/" + savedSermon.getId() + "/audio");
+            sermonService.updateSermon(sermon);
+
+            String uploadAudioDir = "sermon-audio/" + savedSermon.getId();
+            FileUploadUtil.saveFile(uploadAudioDir, audioName, audio);
+        }
     }
 
     @GetMapping("/api/sermons/main")
