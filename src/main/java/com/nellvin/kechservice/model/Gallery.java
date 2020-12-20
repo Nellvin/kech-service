@@ -1,5 +1,8 @@
 package com.nellvin.kechservice.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -17,13 +20,11 @@ public class Gallery {
     @Column(name = "GALLERY_CREATEDATE")
     private Date createDate;
 
-    @Column(name = "GALLERY_AUTHOR", length = 64)
-    private String author;
-
     @OneToMany(
             mappedBy = "gallery",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
+    @JsonManagedReference
     private List<Photo> photos;
 
     public Long getId() {
@@ -50,19 +51,25 @@ public class Gallery {
         this.createDate = createDate;
     }
 
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
     public List<Photo> getPhotos() {
         return photos;
     }
 
     public void setPhotos(List<Photo> photos) {
         this.photos = photos;
+    }
+
+    public boolean addPhoto(Photo photo){
+        return photos.add(photo);
+    }
+
+    @Override
+    public String toString() {
+        return "Gallery{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", createDate=" + createDate +
+                ", photos=" + photos +
+                '}';
     }
 }

@@ -1,5 +1,8 @@
 package com.nellvin.kechservice.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -29,6 +32,7 @@ public class Photo {
     @ManyToOne
     @JoinColumn(name = "gallery_id")
 //    @Column(name = "PHOTO_GALLERY")
+    @JsonBackReference
     private Gallery gallery;
 
     public Long getId() {

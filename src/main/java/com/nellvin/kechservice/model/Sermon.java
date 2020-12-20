@@ -3,7 +3,6 @@ package com.nellvin.kechservice.model;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
-import java.time.Duration;
 import java.util.Date;
 
 @Entity
@@ -27,10 +26,10 @@ public class Sermon {
     private String url;
 
     @Column(length = 64)
-    private String photo;
+    private String photoUrl;
 
     @Column(length = 64)
-    private String audio;
+    private String audioUrl;
 
     public Long  getId() {
         return id;
@@ -72,20 +71,20 @@ public class Sermon {
         this.url = url;
     }
 
-    public String getPhoto() {
-        return photo;
+    public String getPhotoUrl() {
+        return photoUrl;
     }
 
-    public void setPhoto(String photos) {
-        this.photo = photos;
+    public void setPhotoUrl(String photos) {
+        this.photoUrl = photos;
     }
 
-    public String getAudio() {
-        return audio;
+    public String getAudioUrl() {
+        return audioUrl;
     }
 
-    public void setAudio(String audio) {
-        this.audio = audio;
+    public void setAudioUrl(String audio) {
+        this.audioUrl = audio;
     }
 }
 
