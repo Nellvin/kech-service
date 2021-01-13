@@ -20,6 +20,8 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 public class GalleryController {
 
+    private String urlBase = "http://localhost:8080";
+
     @Autowired
     GalleryService galleryService;
 
@@ -80,6 +82,7 @@ public class GalleryController {
             String fileName = StringUtils.cleanPath(image.getOriginalFilename());
             Photo savedPhoto = photoService.savePhoto(photo);
             savedPhoto.setCreateDate(new Date());
+            savedPhoto.setUrl(urlBase+"/api/photos/"+savedPhoto.getId()+"/image");
             savedPhoto.setName(fileName);
             savedPhoto.setFilePath(fileName);
             Gallery gal = galleryService.getGallery(galleryId);

@@ -1,10 +1,14 @@
 package com.nellvin.kechservice.service;
 
+import com.nellvin.kechservice.model.Event;
 import com.nellvin.kechservice.model.Gallery;
+import com.nellvin.kechservice.model.Photo;
 import com.nellvin.kechservice.repository.GalleryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -15,7 +19,9 @@ public class GalleryServiceImpl implements GalleryService{
 
     @Override
     public List<Gallery> retrieveGalleries() {
-        return galleryRepository.findAll();
+        List<Gallery> list = galleryRepository.findAll();
+        Collections.sort(list, Comparator.comparing(Gallery::getCreateDate));
+        return list;
     }
 
     @Override
@@ -37,5 +43,11 @@ public class GalleryServiceImpl implements GalleryService{
     @Override
     public void updateGallery(Gallery gallery) {
         galleryRepository.save(gallery);
+    }
+
+    public void addPhotoToGallery(Long galleryId, Photo photo){
+        Gallery gal = galleryRepository.findById(galleryId).get();
+        gal.addPhoto(photo);
+        galleryRepository.save(gal);
     }
 }
