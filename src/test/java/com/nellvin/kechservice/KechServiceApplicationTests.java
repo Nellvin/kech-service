@@ -7,7 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 class KechServiceApplicationTests {
 
 	@Test
-	void contextLoads() {
+	void test(){
+//		assertTrue(false);
 	}
 
 }

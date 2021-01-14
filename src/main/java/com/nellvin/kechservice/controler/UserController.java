@@ -36,7 +36,7 @@ public class UserController {
             return new User("user", "user", Role.user);
         if(user.getUserName().equals("admin") && user.getPassword().equals("admin") )
             return new User("admin", "admin", Role.administrator);
-        if(userService.retrieveUsers().stream().map(user1 -> user1.getUserName()+" "+ user1.getPassword()).anyMatch( string -> string.equals(user.getUserName()+" "+user.getPassword()))){
+        if(userService.retrieveUsers().stream().map(user1 -> user1.getUserName()+" "+ user1.getPassword()).anyMatch(namePassword -> namePassword.equals(user.getUserName()+" "+user.getPassword()))){
             return new User(user.getUserName(), user.getPassword(), Role.user);
         }
         return null;

@@ -11,7 +11,7 @@ import java.util.Date;
 public class Photo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "PHOTO_NAME", length = 64)
@@ -28,6 +28,9 @@ public class Photo {
 
     @Column(name = "PHOTO_AUTHOR", length = 64)
     private String author;
+
+    @Column(name = "PHOTO_URL")
+    private String url;
 
     @ManyToOne
     @JoinColumn(name = "gallery_id")
@@ -89,5 +92,13 @@ public class Photo {
 
     public void setGallery(Gallery gallery) {
         this.gallery = gallery;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

@@ -1,6 +1,6 @@
 package com.nellvin.kechservice.controler;
 
-import com.nellvin.kechservice.model.FormWrapper;
+//import com.nellvin.kechservice.model.FormWrapper;
 import com.nellvin.kechservice.model.Post;
 import com.nellvin.kechservice.service.PostService;
 import com.nellvin.kechservice.utils.FileUploadUtil;
@@ -114,36 +114,36 @@ public class PostController {
     }
 
 
-    @RequestMapping(path = "/api/multi", method = RequestMethod.POST, consumes = {"multipart/form-data"})
-//    @PostMapping(path = "/api/multi")
-    public void multipart(@RequestPart FormWrapper post) throws IOException {
-
-        System.out.println(post.title);
-        System.out.println(post.content);
-            System.out.println("REST multipart empty? :"+post.image.isEmpty());
-            String fileName = StringUtils.cleanPath(post.image.getOriginalFilename());
-//            post.setFilePath(fileName);
-            Post savedPost = postService.savePost(new Post());
-            String uploadPhotoDir = "post-file/" + savedPost.getId();
-            FileUploadUtil.saveFile(uploadPhotoDir, fileName, post.image);
-
-    }
+//    @RequestMapping(path = "/api/multi", method = RequestMethod.POST, consumes = {"multipart/form-data"})
+////    @PostMapping(path = "/api/multi")
+//    public void multipart(@RequestPart FormWrapper post) throws IOException {
+//
+//        System.out.println(post.title);
+//        System.out.println(post.content);
+//            System.out.println("REST multipart empty? :"+post.image.isEmpty());
+//            String fileName = StringUtils.cleanPath(post.image.getOriginalFilename());
+////            post.setFilePath(fileName);
+//            Post savedPost = postService.savePost(new Post());
+//            String uploadPhotoDir = "post-file/" + savedPost.getId();
+//            FileUploadUtil.saveFile(uploadPhotoDir, fileName, post.image);
+//
+//    }
 
 //    @RequestMapping(path = "/api/multi/title", method = RequestMethod.POST, consumes = {"multipart/form-data"})
-    @PostMapping(path = "/api/multi/title")
-    public void multipartTitle(@ModelAttribute FormWrapper post) throws IOException {
-
-        System.out.println(post);
-        System.out.println(post.title);
-//        System.out.println(post.content);
-//        System.out.println("REST multipart empty? :"+post.image.isEmpty());
-//        String fileName = StringUtils.cleanPath(post.image.getOriginalFilename());
-////            post.setFilePath(fileName);
-//        Post savedPost = postService.savePost(new Post());
-//        String uploadPhotoDir = "post-file/" + savedPost.getId();
-//        FileUploadUtil.saveFile(uploadPhotoDir, fileName, post.image);
-
-    }
+//    @PostMapping(path = "/api/multi/title")
+//    public void multipartTitle(@ModelAttribute FormWrapper post) throws IOException {
+//
+//        System.out.println(post);
+//        System.out.println(post.title);
+////        System.out.println(post.content);
+////        System.out.println("REST multipart empty? :"+post.image.isEmpty());
+////        String fileName = StringUtils.cleanPath(post.image.getOriginalFilename());
+//////            post.setFilePath(fileName);
+////        Post savedPost = postService.savePost(new Post());
+////        String uploadPhotoDir = "post-file/" + savedPost.getId();
+////        FileUploadUtil.saveFile(uploadPhotoDir, fileName, post.image);
+//
+//    }
     @RequestMapping(value = "/api/G", method = RequestMethod.POST, consumes = { "multipart/form-data" })
     public Post GSSwain(@RequestPart("post") Post post,
                         @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {

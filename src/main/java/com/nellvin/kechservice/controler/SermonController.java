@@ -25,7 +25,6 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
-//@RequestMapping("/api/v1")
 public class SermonController {
 
     @Autowired
@@ -60,21 +59,21 @@ public class SermonController {
                 .body(resource);
     }
 
-    @GetMapping("/api/sermon/image")
-    public ResponseEntity<Resource> getImage2() throws FileNotFoundException {
-        File file = new File(String.valueOf(Paths.get("sermon-photo/1/portretProboscis_monkey_(Nasalis_larvatus)_male_head_0.jpg")));
-        System.out.println(Paths.get("sermon-photo/1/portretProboscis_monkey_(Nasalis_larvatus)_male_head_0.jpg"));
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=image.jpg");
-
-        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
-        return ResponseEntity.ok()
-                .headers(headers)
-                .contentLength(file.length())
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(resource);
-    }
+//    @GetMapping("/api/sermon/image")
+//    public ResponseEntity<Resource> getImage2() throws FileNotFoundException {
+//        File file = new File(String.valueOf(Paths.get("sermon-photo/1/portretProboscis_monkey_(Nasalis_larvatus)_male_head_0.jpg")));
+//        System.out.println(Paths.get("sermon-photo/1/portretProboscis_monkey_(Nasalis_larvatus)_male_head_0.jpg"));
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=image.jpg");
+//
+//        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+//        return ResponseEntity.ok()
+//                .headers(headers)
+//                .contentLength(file.length())
+//                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+//                .body(resource);
+//    }
 
     @GetMapping("/api/sermon/{id}/audio")
     public ResponseEntity<Resource> getSermonAudio(@PathVariable(value = "id") Long sermonId) throws FileNotFoundException {
@@ -128,22 +127,11 @@ public class SermonController {
 
         FileUploadUtil.saveFile(uploadPhotoDir, photoName.replace(".jpg", "_small.jpg"), resizedImage);
 
-//        return new RedirectView("/users", true);
     }
 
     @RequestMapping(value = "/api/sermons/xd", method = RequestMethod.POST, consumes = { "multipart/form-data" })
     public void saveSermon3(@RequestPart Sermon sermon, @RequestPart(value = "image", required = false) MultipartFile image,
                             @RequestPart(value = "audio", required = false) MultipartFile audio) throws IOException {
-//        if (image!=null) {
-//            System.out.println("REST multipart empty? :"+image.isEmpty());
-//            String fileName = StringUtils.cleanPath(image.getOriginalFilename());
-//            post.setFilePath(fileName);
-//            Post savedPost = postService.savePost(post);
-//            String uploadPhotoDir = "post-file/" + savedPost.getId();
-//            FileUploadUtil.saveFile(uploadPhotoDir, fileName, image);
-//        }else {
-//            postService.savePost(post);
-//        }
         Sermon savedSermon = sermonService.saveSermon(sermon);
         System.out.println("works!");
         if(image != null) {

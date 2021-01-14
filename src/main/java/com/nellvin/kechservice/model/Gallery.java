@@ -11,7 +11,7 @@ import java.util.List;
 public class Gallery {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "GALLERY_NAME", length = 64)

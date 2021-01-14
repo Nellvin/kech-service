@@ -8,8 +8,9 @@ import java.util.Date;
 @Entity
 @Table(name = "SERMON")
 public class Sermon {
+
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long  id;
 
     @Column(name = "SERMON_NAME", length = 64)
